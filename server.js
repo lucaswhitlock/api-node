@@ -5,7 +5,12 @@ const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
 
-mongoose.connect(dbConfig.url)
+console.log("Connecting to database...")
+mongoose.connect(dbConfig.url_remote).then(() => {
+    console.log("Connected to database")
+}).catch(err => {
+    console.log("Could not connect to the database.")
+})
 
 const serverConfig = {
   port: 8000
@@ -21,8 +26,6 @@ server.get("/", async (req, res) => {
     message: "Welcome to Dr Bluhm Website's API."
   });
 });
-server.listen(serverConfig.port, function() {
-  console.log("Server listening on port: " + serverConfig.port);
-});
+server.listen(serverConfig.port);
 
 module.exports = server;
