@@ -1,0 +1,20 @@
+{
+  "name": "api-db-bluhm",
+  "version": "1.0.0",
+  "description": "Simple API to manage access to dr bluhm website's database",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "author": "lwhitlock",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongodb": "^3.0.7",
+    "mongoose": "^5.0.17"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  }
+}
