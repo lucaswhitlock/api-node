@@ -6,10 +6,11 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
 console.log("Connecting to database...")
-mongoose.connect(dbConfig.url_remote).then(() => {
+mongoose.connect(dbConfig.url_local).then(() => {
     console.log("Connected to database")
 }).catch(err => {
     console.log("Could not connect to the database.")
+    process.exit()
 })
 
 const serverConfig = {
@@ -21,11 +22,14 @@ const server = express();
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-server.get("/", async (req, res) => {
-  await res.json({
+server.get("/", (req, res) => {
+  res.json({
     message: "Welcome to Dr Bluhm Website's API."
   });
 });
+
+require('./app/routes/people-route')(server)
+require('./app/routes/contacts-route')(server)
 server.listen(serverConfig.port);
 
 module.exports = server;

@@ -1,7 +1,6 @@
-const restful = require("node-restful");
-const mongoose = restful.mongoose;
+const mongoose = require("mongoose");
 
-const peopleSchema = new mongoose.Schema({
+const contactSchema = new mongoose.Schema({
   photo: { type: String, required: true },
   name: { type: String, required: true },
   position: { type: String, required: true },
@@ -12,4 +11,4 @@ const peopleSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = restful.model('People', peopleSchema)
+module.exports = mongoose.model('Contacts', contactSchema)

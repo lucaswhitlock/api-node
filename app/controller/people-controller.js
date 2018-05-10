@@ -1,3 +1,4 @@
+const isNull = require("util");
 const People = require("./../model/people-schema");
 
 exports.create = async (req, res) => {
@@ -8,7 +9,7 @@ exports.create = async (req, res) => {
     !req.body.lab ||
     !req.body.email
   ) {
-    return await res.status(400).send({
+    return res.status(400).send({
       message: "Invalid person information. Please verify and try again!"
     });
   }
@@ -22,57 +23,46 @@ exports.create = async (req, res) => {
     email: req.body.email
   });
 
-  person
-    .save()
-    .then(data => {
-      await res.send(data);
-    })
-    .catch(err => {
-      await res.status(500).send({
-        message:
-          err.message ||
-          "Error while trying to persist person. Contact support for more info!"
-      });
+  try {
+    const result = await person.save();
+    res.send(result);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
     });
+  }
 };
 
 exports.findAll = async (req, res) => {
-  People.find()
-    .then(people => {
-      await res.send(people);
-    })
-    .catch(err => {
-      await res.status(500).send({
-        message:
-          err.message ||
-          "Error while trying to get all users. Contact support fore more info!"
-      });
-    });
+  try {
+    const people = await People.find();
+    console.log(People.find());
+    res.json(people);
+  } catch (err) {
+    res.status(500).json({ message: "Error while trying to retrieve people!" });
+  }
 };
 
 exports.findById = async (req, res) => {
-  People.findById(req.params.personId)
-    .then(person => {
-      if (!person) {
-        return await res.status(404).send({
-          message:
-            "Could not find any person with the id " + req.params.personId
-        });
-      }
-      await res.send(person);
-    })
-    .catch(err => {
-      if (err.kind === "ObjectId") {
-        return await res.status(404).send({
-          message:
-            "Could not find any person with the id " + req.params.personId
-        });
-      }
-      return await res.status(500).send({
-        message:
-          "Error while trying to retrieve person with id " + req.params.personId
+  try {
+    const result = await People.findById(req.params.personId);
+    if (result.isNull) {
+      res.status(404).send({
+        message: "Couldn't find any person with the id:" + req.params.personId
       });
+    }
+    res.send(result);
+  } catch (err) {
+    if (err.kind === "ObjectId" || err.kind === undefined) {
+      return res.status(404).send({
+        message: "Couldn't find any person with the id:" + req.params.personId
+      });
+    }
+    return res.status(500).send({
+      message:
+        "Database error, please contact your support for more information!"
     });
+  }
 };
 
 exports.update = async (req, res) => {
@@ -83,62 +73,50 @@ exports.update = async (req, res) => {
     !req.body.lab ||
     !req.body.email
   ) {
-    return await res.status(400).send({
+    return res.status(400).send({
       message: "Invalid person information. Please verify and try again!"
     });
   }
 
-  People.findByIdAndUpdate(
-    req.params.personId,
-    {
-      photo: req.body.photo || "",
-      name: req.body.name,
-      position: req.body.position,
-      office: req.body.office,
-      lab: req.body.lab,
-      email: req.body.email
-    },
-    { new: true }
-  )
-    .then(person => {
-      if (!person) {
-        return await res.status(404).send({
-          message:
-            "Could not find any person with the id " + req.params.personId
-        });
-      }
-      await res.send(person);
-    })
-    .catch(err => {
-      if (err.kind === "ObjectId") {
-        return await res.status(404).send({
-          message:
-            "Could not find any person with the id " + req.params.personId
-        });
-      }
-      return await res.status(500).send({
-        message:
-          "Error while trying to retrieve person with id " + req.params.personId
+  try {
+    const result = await People.findByIdAndUpdate(
+      req.params.personId,
+      req.body,
+      { new: true }
+    );
+    if (result.isNull) {
+      res.status(404).send({
+        error: "Could not find any person with the id " + req.params.personId
       });
+    }
+  } catch (err) {
+    if (err.kind === "ObjectId" || err.name === "NotFound") {
+      return res.status(404).send({
+        message: "Could not find any person with the id " + req.params.personId
+      });
+    }
+    return res.status(500).send({
+      message: "Could not delete Person with id " + req.params.personId
     });
+  }
 };
 
 exports.delete = async (req, res) => {
-    People.findByIdAndRemove(req.params.personId).then(person => {
-        if(!person) {
-            return await res.status(404).send({
-                message: "Could not find any person with the id " + req.params.personId
-            });
-        }
-        await res.send({message: "Person deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return await res.status(404).send({
-                message: "Could not find any person with the id " + req.params.personId
-            });                
-        }
-        return await res.status(500).send({
-            message: "Could not delete Person with id " + req.params.personId
-        });
-    })
+  try {
+    const result = await People.findByIdAndRemove(req.params.personId);
+    if (result.isNull) {
+      res.status(404).send({
+        error: "Could not find any person with the id " + req.params.personId
+      });
+    }
+  } catch (err) {
+    if (err.kind === "ObjectId" || err.name === "NotFound") {
+      return res.status(404).send({
+        message: "Could not find any person with the id " + req.params.personId
+      });
+    }
+    return res.status(500).send({
+      message: "Could not delete Person with id " + req.params.personId
+    });
+  }
 };
