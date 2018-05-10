@@ -1,5 +1,5 @@
 const isNull = require("util");
-const People = require("./../model/people-schema");
+const Contact = require("./../model/contacts-schema");
 
 exports.create = async (req, res) => {}
 exports.findAll = async (req, res) => {}
