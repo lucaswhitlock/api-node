@@ -35,9 +35,8 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const people = await People.find();
-    console.log(People.find());
-    res.json(people);
+    const result = await People.find();
+    res.json(result);
   } catch (err) {
     res.status(500).json({ message: "Error while trying to retrieve people!" });
   }
@@ -96,7 +95,7 @@ exports.update = async (req, res) => {
       });
     }
     return res.status(500).send({
-      message: "Could not delete Person with id " + req.params.personId
+      message: "Could not delete person with id " + req.params.personId
     });
   }
 };
@@ -116,7 +115,7 @@ exports.delete = async (req, res) => {
       });
     }
     return res.status(500).send({
-      message: "Could not delete Person with id " + req.params.personId
+      message: "Could not delete person with id " + req.params.personId
     });
   }
 };

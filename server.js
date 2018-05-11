@@ -13,9 +13,7 @@ mongoose.connect(dbConfig.url_local).then(() => {
     process.exit()
 })
 
-const serverConfig = {
-  port: 8000
-};
+const PORT = process.env.PORT || 8000;
 
 const server = express();
 
@@ -30,6 +28,8 @@ server.get("/", (req, res) => {
 
 require('./app/routes/people-route')(server)
 require('./app/routes/contacts-route')(server)
-server.listen(serverConfig.port);
+require('./app/routes/posts-route')(server)
+require('./app/routes/projects-route')(server)
+server.listen(PORT);
 
 module.exports = server;

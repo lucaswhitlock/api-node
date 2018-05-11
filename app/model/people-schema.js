@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const contactSchema = new mongoose.Schema({
+const peopleSchema = new mongoose.Schema({
   photo: { type: String, required: true },
   name: { type: String, required: true },
   position: { type: String, required: true },
@@ -8,7 +8,8 @@ const contactSchema = new mongoose.Schema({
   lab: { type: Number, min: 8, required: true },
   email: { type: String, required: true }
 }, {
+  collection: 'peoples',
   timestamps: true
 });
 
-module.exports = mongoose.model('Contacts', contactSchema)
+module.exports = mongoose.model('People', peopleSchema)
