@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
 console.log("Connecting to database...")
-mongoose.connect(dbConfig.url_local).then(() => {
+mongoose.connect(dbConfig.url_remote).then(() => {
     console.log("Connected to database")
 }).catch(err => {
     console.log("Could not connect to the database.")
