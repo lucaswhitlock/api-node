@@ -2,6 +2,7 @@ const isNull = require("util");
 const Pai = require("./../model/pai-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const SECRET = 'cmcgmonitoria';
 
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -78,21 +79,34 @@ exports.login = async (req, res) => {
       });
     }
     let pai = await Pai.findOne({
-      cpfUsuario: req.body.cpfUsuario
+      cpfUsuario: req.body.email
     });
     if (!pai) {
       res.status(404).send({
         message: 'Usuario informado nao cadastrado ou incorreto!'
       })
-    } else if (!bcrypt.compareSync(req.body.pswUsuario, pai.pswUsuario)) {
+    } else if (!bcrypt.compareSync(req.body.password, pai.pswUsuario)) {
       res.status(401).send({
         message: 'Senha incorreta!'
       })
     }
-    res.status(200).send(pai);
+    let token = jwt.sign({
+      id: pai._id,
+      nomeUsuario: pai.nomeUsuario,
+      cpfUsuario: pai.cpfUsuario
+    }, SECRET, {
+      expiresIn: 86400
+    });
+    res.status(200).send({
+      user: {
+        nomeUsuario: pai.nomeUsuario,
+        cpfUsuario: pai.cpfUsuario,
+        token: token
+      }
+    })
   } catch (error) {
     res.status(500).send({
-      message: 'Erro ao ler mensagem enviada!'
+      message: error.message
     });
   }
 };

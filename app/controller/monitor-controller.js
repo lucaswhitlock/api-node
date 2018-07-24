@@ -1,8 +1,7 @@
-const isNull = require("util");
 const Monitor = require("./../model/monitor-schema");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const SECRET = process.env.SECRET || 'cmcgmonitoria'
+const jwt = require('jsonwebtoken');
+const SECRET = 'cmcgmonitoria';
 
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -79,21 +78,34 @@ exports.login = async (req, res) => {
       });
     }
     let monitor = await Monitor.findOne({
-      cpfUsuario: req.body.cpfUsuario
+      cpfUsuario: req.body.email
     });
     if (!monitor) {
       res.status(404).send({
         message: 'Usuario informado nao cadastrado ou incorreto!'
       })
-    } else if (!bcrypt.compareSync(req.body.pswUsuario, monitor.pswUsuario)) {
+    } else if (!bcrypt.compareSync(req.body.password, monitor.pswUsuario)) {
       res.status(401).send({
         message: 'Senha incorreta!'
       })
     }
-    res.status(200).send(monitor);
+    let token = jwt.sign({
+      id: monitor._id,
+      nomeUsuario: monitor.nomeUsuario,
+      cpfUsuario: monitor.cpfUsuario
+    }, SECRET, {
+      expiresIn: 86400
+    });
+    res.status(200).send({
+      user: {
+        nomeUsuario: monitor.nomeUsuario,
+        cpfUsuario: monitor.cpfUsuario,
+        token: token
+      }
+    })
   } catch (error) {
     res.status(500).send({
-      message: 'Erro ao ler mensagem enviada!'
+      message: error.message
     });
   }
 };

@@ -1,5 +1,7 @@
 const Juiz = require("./../model/juiz-schema");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const SECRET = 'cmcgmonitoria';
 
 exports.create = async (req, res) => {
     let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -76,21 +78,34 @@ exports.login = async (req, res) => {
             });
         }
         let juiz = await Juiz.findOne({
-            cpfUsuario: req.body.cpfUsuario
+            cpfUsuario: req.body.email
         });
         if (!juiz) {
             res.status(404).send({
                 message: 'Usuario informado nao cadastrado ou incorreto!'
             })
-        } else if (!bcrypt.compareSync(req.body.pswUsuario, juiz.pswUsuario)) {
+        } else if (!bcrypt.compareSync(req.body.password, juiz.pswUsuario)) {
             res.status(401).send({
                 message: 'Senha incorreta!'
             })
         }
-        res.status(200).send(juiz);
+        let token = jwt.sign({
+            id: juiz._id,
+            nomeUsuario: juiz.nomeUsuario,
+            cpfUsuario: juiz.cpfUsuario
+        }, SECRET, {
+            expiresIn: 86400
+        });
+        res.status(200).send({
+            user: {
+                nomeUsuario: juiz.nomeUsuario,
+                cpfUsuario: juiz.cpfUsuario,
+                token: token
+            }
+        })
     } catch (error) {
         res.status(500).send({
-            message: 'Erro ao ler mensagem enviada!'
+            message: error.message
         });
     }
 };
