@@ -71,44 +71,29 @@ exports.delete = async (req, res) => {
   }
 };
 
-exports.register = async (req, res) => {
+exports.login = async (req, res) => {
   try {
-    let monitor = await Monitor.findOne({ cpfUsuario: req.body.cpfUsuario })
-    if (!bcrypt.compareSync(req.body.pswUsuario, monitor.pswUsuario)){
-      res.status(401).send({ message: 'Acesso nao permitido! Senha incorreta.' })
+    if (!req.body) {
+      res.status(500).send({
+        message: 'Erro ao ler mensagem enviada!'
+      });
     }
-    let userToken = jwt.sign({ 
-      id: monitor._id, 
-      nomeUsuario: monitor.nomeUsuario,
-      cpfUsuario: monitor.cpfUsuario
-    }, SECRET, {
-      expiresIn: 86400
+    let monitor = await Monitor.findOne({
+      cpfUsuario: req.body.cpfUsuario
     });
-    res.status(200).send({ token: userToken })
-  } catch (error) {
-    res.status(500).send({ message: 'Erro ao autenticar usuario' });
-  }
-};
-
-exports.autenticate = async (req, res) => {
-  try {
-    var headerToken = req.headers['x-user-token'];
-    if (!headerToken) {
-      res.status(401).send('Token invalido!')
+    if (!monitor) {
+      res.status(404).send({
+        message: 'Usuario informado nao cadastrado ou incorreto!'
+      })
+    } else if (!bcrypt.compareSync(req.body.pswUsuario, monitor.pswUsuario)) {
+      res.status(401).send({
+        message: 'Senha incorreta!'
+      })
     }
-    jwt.verify(headerToken, SECRET, function (error, decrypt) {
-      if (error) {
-        res.status(500).send({
-          auth: false,
-          message: 'Falha ao autenticar usuario!'
-        })
-      }
-      res.status(200).send(decrypt);
-    })
+    res.status(200).send(monitor);
   } catch (error) {
     res.status(500).send({
-      auth: false,
-      message: 'Falha ao autenticar usuario!'
-    })
+      message: 'Erro ao ler mensagem enviada!'
+    });
   }
 };

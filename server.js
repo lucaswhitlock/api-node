@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const dbConfig = require('./database.config')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const Monitor = require('./app/controller/monitor-controller')
+const Pai = require('./app/controller/pai-controller')
 
 mongoose.Promise = global.Promise
 
@@ -34,6 +36,7 @@ require('./app/routes/fo-route')(server)
 require('./app/routes/tipo-fo-route')(server)
 require('./app/routes/aluno-route')(server)
 require('./app/routes/monitor-route')(server)
+require('./app/routes/juiz-route')(server)
 require('./app/routes/pai-route')(server)
 require('./app/routes/atenuante-route')(server)
 require('./app/routes/agravante-route')(server)

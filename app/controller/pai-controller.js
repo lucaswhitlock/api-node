@@ -4,20 +4,20 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.create = async (req, res) => {
-    let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
-    try {
-        var pai = new Pai({
-            nomeUsuario: req.body.nomeUsuario,
-            cpfUsuario: req.body.cpfUsuario,
-            pswUsuario: hashdPwsd
-        });
-        res.send(await pai.save());
-    } catch (error) {
-        console.log(err);
-        res.status(500).send({
-        message: err.message
-        });
-    }
+  let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
+  try {
+    var pai = new Pai({
+      nomeUsuario: req.body.nomeUsuario,
+      cpfUsuario: req.body.cpfUsuario,
+      pswUsuario: hashdPwsd
+    });
+    res.send(await pai.save());
+  } catch (error) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    });
+  }
 };
 
 exports.findAll = async (req, res) => {
@@ -66,6 +66,33 @@ exports.delete = async (req, res) => {
   } catch (err) {
     res.status(500).send({
       message: err.message
+    });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    if (!req.body) {
+      res.status(500).send({
+        message: 'Erro ao ler mensagem enviada!'
+      });
+    }
+    let pai = await Pai.findOne({
+      cpfUsuario: req.body.cpfUsuario
+    });
+    if (!pai) {
+      res.status(404).send({
+        message: 'Usuario informado nao cadastrado ou incorreto!'
+      })
+    } else if (!bcrypt.compareSync(req.body.pswUsuario, pai.pswUsuario)) {
+      res.status(401).send({
+        message: 'Senha incorreta!'
+      })
+    }
+    res.status(200).send(pai);
+  } catch (error) {
+    res.status(500).send({
+      message: 'Erro ao ler mensagem enviada!'
     });
   }
 };
