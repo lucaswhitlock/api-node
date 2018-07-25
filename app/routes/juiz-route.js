@@ -1,12 +1,13 @@
 module.exports = (api) => {
 
     const juiz = require('../controller/juiz-controller')
+    const seguranca = require('../etc/check-identity')
 
-    api.post('/juizes', juiz.create)
     api.post('/juizes/login', juiz.login)
-    api.get('/juizes', juiz.findAll)
-    api.get('/juizes/:juizId', juiz.findById)
-    api.put('/juizes/:juizId', juiz.update)
-    api.delete('/juizes/:juizId', juiz.delete)
+    api.post('/juizes', seguranca.verify, juiz.create)
+    api.get('/juizes', seguranca.verify, juiz.findAll)
+    api.get('/juizes/:juizId', seguranca.verify, juiz.findById)
+    api.put('/juizes/:juizId', seguranca.verify, juiz.update)
+    api.delete('/juizes/:juizId', seguranca.verify, juiz.delete)
 
 }

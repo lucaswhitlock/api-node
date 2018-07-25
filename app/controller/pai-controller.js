@@ -1,5 +1,5 @@
-const isNull = require("util");
 const Pai = require("./../model/pai-schema");
+const Aluno = require("./../model/aluno-schema")
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const SECRET = 'cmcgmonitoria';
@@ -7,14 +7,29 @@ const SECRET = 'cmcgmonitoria';
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
   try {
+    if (!req.body.filhoPai) {
+      res.status(403).send({
+        message: 'Aluno nao informado!'
+      })
+    }
+    let filho = await Aluno.findById(req.body.filhoPai);
+    if (!filho) {
+      res.status(403).send({
+        message: 'Aluno informado nao encontrado na base de dados!'
+      })
+    }
     var pai = new Pai({
       nomeUsuario: req.body.nomeUsuario,
       cpfUsuario: req.body.cpfUsuario,
-      pswUsuario: hashdPwsd
+      pswUsuario: hashdPwsd,
+      filhoPai: filho
     });
-    res.send(await pai.save());
-  } catch (error) {
-    console.log(err);
+    let result = await pai.save( () => {
+      filho.paiAluno.push(pai);
+      filho.save()
+    });
+    res.status(200).send(result);
+  } catch (err) {
     res.status(500).send({
       message: err.message
     });
@@ -25,7 +40,7 @@ exports.findAll = async (req, res) => {
   try {
     res.send(
       await Pai.find().populate({
-        path: "filhoAluno"
+        path: "filhoPai"
       })
     );
   } catch (err) {

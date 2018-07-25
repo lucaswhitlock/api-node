@@ -38,11 +38,11 @@ exports.update = async (req, res) => {
     } catch (error) {
         if (err.kind === "ObjectId" || err.name === "NotFound") {
             return res.status(404).send({
-                message: "Could not find any type with the id " + req.params.agravanteId
+                message: "Não foi possível encontrar nenhum tipo de FO com o id: " + req.params.agravanteId
             });
         }
         return res.status(500).send({
-            message: "Could not delete type with id " + req.params.agravanteId
+            message: "Não foi possível deletar o tipo de FO com o id: " + req.params.agravanteId
         });
     }
 };
@@ -53,11 +53,11 @@ exports.delete = async (req, res) => {
     } catch (error) {
         if (err.kind === "ObjectId" || err.name === "NotFound") {
             return res.status(404).send({
-                message: "Could not find any fo with the id " + req.params.agravanteId
+                message: "Não foi possível encontrar nenhum tipo de FO com o id: " + req.params.agravanteId
             });
         }
         return res.status(500).send({
-            message: "Could not delete fo with id " + req.params.agravanteId
+            message: "Não foi possível deletar o tipo de FO com o id: " + req.params.agravanteId
         });
     }
 };

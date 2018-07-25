@@ -1,12 +1,13 @@
 module.exports = (api) => {
 
     const pai = require('../controller/pai-controller')
+    const seguranca = require('../etc/check-identity')
 
-    api.post('/pais', pai.create)
     api.post('/pais/login', pai.login)
-    api.get('/pais', pai.findAll)
-    api.get('/pais/:paiId', pai.findById)
-    api.put('/pais/:paiId', pai.update)
-    api.delete('/pais/:paiId', pai.delete)
+    api.post('/pais', seguranca.verify, pai.create)
+    api.get('/pais', seguranca.verify, pai.findAll)
+    api.get('/pais/:paiId', seguranca.verify, pai.findById)
+    api.put('/pais/:paiId', seguranca.verify, pai.update)
+    api.delete('/pais/:paiId', seguranca.verify, pai.delete)
 
 }

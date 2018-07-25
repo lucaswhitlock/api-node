@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const paiSchema = extendSchema(usuarioSchema,{
   pswUsuario: {type: String, required: true},
-  filhoAluno: [{ type: Schema.Types.ObjectId, ref: 'Alunos' }]
+  filhoPai: [{ type: Schema.Types.ObjectId, required: true, ref: 'Alunos' }]
 }, {
   collection: 'Pais',
   timestamps: true

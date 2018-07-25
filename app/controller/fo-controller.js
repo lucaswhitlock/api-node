@@ -1,28 +1,27 @@
-const isNull = require("util");
 const FO = require("./../model/fo-schema");
-const Monitor = require("./../model/monitor-schema")
+const Monitor = require("./../model/monitor-schema");
+const Pai = require("./../model/pai-schema");
 
 exports.create = async (req, res) => {
+
+  let pai = await Pai.findOne({ filhoPai: req.body.aluno });
+  let monitor = await Monitor.findById(req.body.monitor);
+
   var fo = new FO({
     aluno: req.body.aluno,
     monitor: req.body.monitor,
     descricao: req.body.descricao,
+    responsavel: pai
   });
 
   try {
-    let result = await fo.save(function (err) {
-      if (err) {
-        res.status(500).send(err.message)
-      }
-      Monitor.findById(req.body.monitor, function (err, monitor) {
-        if (err) console.log(err);
-        monitor.foMonitor.push(fo);
-        monitor.save(function (err, monitorAtualizado) {
-          if (err) return handleError(err);
-          res.send(fo);
-        });
-      });
-    })
+    let result = await fo.save( () => {
+      monitor.fosUsuarios.push(fo);
+      monitor.save();
+      pai.fosUsuarios.push(fo);
+      pai.save();
+    });
+    res.status(200).send(result)
   } catch (err) {
     res.status(500).send({
       message: err.message
