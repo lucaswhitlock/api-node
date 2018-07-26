@@ -9,13 +9,17 @@ exports.create = async (req, res) => {
   try {
     if (!req.body.filhoPai) {
       res.status(403).send({
-        message: 'Aluno nao informado!'
+        message: 'Aluno não informado!'
       })
     }
     let filho = await Aluno.findById(req.body.filhoPai);
     if (!filho) {
       res.status(403).send({
-        message: 'Aluno informado nao encontrado na base de dados!'
+        message: 'Aluno informado não encontrado na base de dados!'
+      })
+    } else if (filho.paiAluno.length > 2){
+      res.status(403).send({
+        message: 'Já existem dois responsáveis cadastrados para este aluno!'
       })
     }
     var pai = new Pai({
@@ -98,7 +102,7 @@ exports.login = async (req, res) => {
     });
     if (!pai) {
       res.status(404).send({
-        message: 'Usuario informado nao cadastrado ou incorreto!'
+        message: 'Usuario informado não cadastrado ou incorreto!'
       })
     } else if (!bcrypt.compareSync(req.body.password, pai.pswUsuario)) {
       res.status(401).send({
