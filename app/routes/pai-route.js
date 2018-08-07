@@ -4,7 +4,7 @@ module.exports = (api) => {
     const seguranca = require('../etc/check-identity')
 
     api.post('/pais/login', pai.login)
-    api.post('/pais', seguranca.verify, pai.create)
+    api.post('/pais', pai.create)
     api.get('/pais', seguranca.verify, pai.findAll)
     api.get('/pais/:paiId', seguranca.verify, pai.findById)
     api.put('/pais/:paiId', seguranca.verify, pai.update)

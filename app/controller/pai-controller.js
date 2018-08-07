@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
       res.status(403).send({
         message: 'Aluno informado não encontrado na base de dados!'
       })
-    } else if (filho.paiAluno.length > 2){
+    } else if (filho.paiAluno.length >= 2){
       res.status(403).send({
         message: 'Já existem dois responsáveis cadastrados para este aluno!'
       })
@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
       filho.paiAluno.push(pai);
       filho.save()
     });
-    res.status(200).send(result);
+    res.status(200).send(pai);
   } catch (err) {
     res.status(500).send({
       message: err.message
@@ -98,13 +98,13 @@ exports.login = async (req, res) => {
       });
     }
     let pai = await Pai.findOne({
-      cpfUsuario: req.body.email
+      cpfUsuario: req.body.cpfUsuario
     });
     if (!pai) {
       res.status(404).send({
         message: 'Usuario informado não cadastrado ou incorreto!'
       })
-    } else if (!bcrypt.compareSync(req.body.password, pai.pswUsuario)) {
+    } else if (!bcrypt.compareSync(req.body.pswUsuario, pai.pswUsuario)) {
       res.status(401).send({
         message: 'Senha incorreta!'
       })

@@ -1,7 +1,10 @@
 const Monitor = require("./../model/monitor-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const log4js = require('../etc/log4j-init');
 const SECRET = 'cmcgmonitoria';
+
+var log = log4js.getLogger();
 
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -71,20 +74,24 @@ exports.delete = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  log.info('Requisição recebida.')
   try {
     if (!req.body) {
+      log.error('Requisição sem inforção no corpo da mensagem.');
       res.status(500).send({
         message: 'Erro ao ler mensagem enviada!'
       });
     }
     let monitor = await Monitor.findOne({
-      cpfUsuario: req.body.email
+      cpfUsuario: req.body.cpfUsuario
     });
     if (!monitor) {
+      log.error('Monitor com CPF ' + req.body.cpfUsuario + ' não encontrado.');
       res.status(404).send({
         message: 'Usuario informado nao cadastrado ou incorreto!'
       })
-    } else if (!bcrypt.compareSync(req.body.password, monitor.pswUsuario)) {
+    } else if (!bcrypt.compareSync(req.body.pswUsuario, monitor.pswUsuario)) {
+      log.error('Senha informada pelo usuário incorreta.');
       res.status(401).send({
         message: 'Senha incorreta!'
       })
@@ -96,14 +103,14 @@ exports.login = async (req, res) => {
     }, SECRET, {
       expiresIn: 86400
     });
+    log.info('Monitor ' + monitor.nomeUsuario + ' logado com sucesso!');
     res.status(200).send({
-      user: {
-        nomeUsuario: monitor.nomeUsuario,
-        cpfUsuario: monitor.cpfUsuario,
-        token: token
-      }
+      nomeUsuario: monitor.nomeUsuario,
+      cpfUsuario: monitor.cpfUsuario,
+      token: token
     })
   } catch (error) {
+    log.error('Erro ao realizar login do monitor!', error);
     res.status(500).send({
       message: error.message
     });

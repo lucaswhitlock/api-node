@@ -40,6 +40,9 @@ require('./app/routes/juiz-route')(server)
 require('./app/routes/pai-route')(server)
 require('./app/routes/atenuante-route')(server)
 require('./app/routes/agravante-route')(server)
+require('./app/routes/psico-route')(server)
+// require('./app/routes/colegio-route')(server)
+
 server.listen(PORT);
 
 module.exports = server;
