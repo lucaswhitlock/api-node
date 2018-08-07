@@ -74,7 +74,7 @@ exports.delete = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  log.info('Requisição recebida.')
+  log.info('Requisição para Login recebida.')
   try {
     if (!req.body) {
       log.error('Requisição sem informação no corpo da mensagem.');
@@ -103,7 +103,7 @@ exports.login = async (req, res) => {
     }, SECRET, {
       expiresIn: 86400
     });
-    log.info('Monitor ' + monitor.nomeUsuario + ' logado com sucesso!');
+    log.info('Monitor [' + monitor.nomeUsuario + '] logado com sucesso!');
     res.status(200).send({
       nomeUsuario: monitor.nomeUsuario,
       cpfUsuario: monitor.cpfUsuario,

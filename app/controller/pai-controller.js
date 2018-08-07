@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
       res.status(403).send({
         message: 'Aluno informado não encontrado na base de dados!'
       })
-    } else if (filho.paiAluno.length >= 2){
+    } else if (filho.paiAluno.length >= 2) {
       res.status(403).send({
         message: 'Já existem dois responsáveis cadastrados para este aluno!'
       })
@@ -31,7 +31,7 @@ exports.create = async (req, res) => {
       pswUsuario: hashdPwsd,
       filhoPai: filho
     });
-    let result = await pai.save( () => {
+    let result = await pai.save(() => {
       filho.paiAluno.push(pai);
       filho.save()
     });
@@ -94,7 +94,7 @@ exports.delete = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  log.info('Requisição recebida.');
+  log.info('Requisição para Login recebida.');
   try {
     if (!req.body) {
       log.error('Requisição sem informação no corpo da mensagem.');
@@ -123,13 +123,11 @@ exports.login = async (req, res) => {
     }, SECRET, {
       expiresIn: 86400
     });
-    log.info('Pai ' + pai.nomeUsuario + ' logado com sucesso!');
+    log.info('Pai [' + pai.nomeUsuario + '] logado com sucesso!');
     res.status(200).send({
-      user: {
-        nomeUsuario: pai.nomeUsuario,
-        cpfUsuario: pai.cpfUsuario,
-        token: token
-      }
+      nomeUsuario: pai.nomeUsuario,
+      cpfUsuario: pai.cpfUsuario,
+      token: token
     });
   } catch (error) {
     log.error('Erro ao realizar login do responsável!', error);
