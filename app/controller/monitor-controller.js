@@ -4,8 +4,7 @@ const jwt = require('jsonwebtoken');
 const log4j = require('../etc/log4j-init');
 const SECRET = 'cmcgmonitoria';
 
-infoLog = log4j.getLogger('info');
-errorLog = log4j.getLogger('errors');
+log = log4j.getLogger();
 
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -75,10 +74,10 @@ exports.delete = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  infoLog.log('Requisição recebida.')
+  log.info('Requisição recebida.')
   try {
     if (!req.body) {
-      errorLog.log('Requisição sem informação no corpo da mensagem.');
+      log.error('Requisição sem informação no corpo da mensagem.');
       res.status(500).send({
         message: 'Erro ao ler mensagem enviada!'
       });
@@ -87,12 +86,12 @@ exports.login = async (req, res) => {
       cpfUsuario: req.body.cpfUsuario
     });
     if (!monitor) {
-      errorLog.log('Monitor com CPF ' + req.body.cpfUsuario + ' não encontrado.');
+      log.error('Monitor com CPF ' + req.body.cpfUsuario + ' não encontrado.');
       res.status(404).send({
         message: 'Usuario informado nao cadastrado ou incorreto!'
       })
     } else if (!bcrypt.compareSync(req.body.pswUsuario, monitor.pswUsuario)) {
-      errorLog.log('Senha informada pelo usuário é incorreta.');
+      log.error('Senha informada pelo usuário é incorreta.');
       res.status(401).send({
         message: 'Senha incorreta!'
       })
@@ -104,14 +103,14 @@ exports.login = async (req, res) => {
     }, SECRET, {
       expiresIn: 86400
     });
-    infoLog.log('Monitor ' + monitor.nomeUsuario + ' logado com sucesso!');
+    log.info('Monitor ' + monitor.nomeUsuario + ' logado com sucesso!');
     res.status(200).send({
       nomeUsuario: monitor.nomeUsuario,
       cpfUsuario: monitor.cpfUsuario,
       token: token
     })
   } catch (error) {
-    errorLog.log('Erro ao realizar login do monitor!', error);
+    log.error('Erro ao realizar login do monitor!', error);
     res.status(500).send({
       message: error.message
     });

@@ -6,13 +6,13 @@ log4js.configure({
             type: 'console'
         },
         error: {
-            type: 'file', filename: '/errors.log'
+            type: 'file', filename: __dirname + '/logs/errors.log'
         },
         info: {
-            type: 'file', filename: '/info.log'
+            type: 'file', filename: __dirname + '/logs/info.log'
         },
         root: {
-            type: 'file', filename: '/root.log'
+            type: 'file', filename: __dirname + '/logs/root.log'
         }
     },
     categories: {
