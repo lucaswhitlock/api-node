@@ -10,13 +10,13 @@ const SECRET = 'cmcgmonitoria';
 exports.create = async (req, res) => {
   let hashedPassword = bcrypt.hashSync(colegioPassword);
   var colegio = new Colegio({
-    colegiousuario = req.body.colegiousuario,
-    colegioPassword = hashedPassword,
-    colegioNome = req.body.colegioNome,
-    colegioComandante = req.body.colegioComandante,
-    colegioRegiao = req.body.colegioRegiao,
-    colegioTelefone = req.body.colegioTelefone,
-    colegioEmail = req.body.colegioEmail
+    colegioUsuario: req.body.colegioUsuario,
+    colegioPassword: hashedPassword,
+    colegioNome: req.body.colegioNome,
+    colegioComandante: req.body.colegioComandante,
+    colegioRegiao: req.body.colegioRegiao,
+    colegioTelefone: req.body.colegioTelefone,
+    colegioEmail: req.body.colegioEmail
   });
   try {
     res.status(200).send(

@@ -1,10 +1,11 @@
 const Monitor = require("./../model/monitor-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
-const log4js = require('../etc/log4j-init');
+const log4j = require('../etc/log4j-init');
 const SECRET = 'cmcgmonitoria';
 
-var log = log4js.getLogger();
+infoLog = log4j.getLogger('info');
+errorLog = log4j.getLogger('errors');
 
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -74,10 +75,10 @@ exports.delete = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  log.info('Requisição recebida.')
+  infoLog.log('Requisição recebida.')
   try {
     if (!req.body) {
-      log.error('Requisição sem inforção no corpo da mensagem.');
+      errorLog.log('Requisição sem informação no corpo da mensagem.');
       res.status(500).send({
         message: 'Erro ao ler mensagem enviada!'
       });
@@ -86,12 +87,12 @@ exports.login = async (req, res) => {
       cpfUsuario: req.body.cpfUsuario
     });
     if (!monitor) {
-      log.error('Monitor com CPF ' + req.body.cpfUsuario + ' não encontrado.');
+      errorLog.log('Monitor com CPF ' + req.body.cpfUsuario + ' não encontrado.');
       res.status(404).send({
         message: 'Usuario informado nao cadastrado ou incorreto!'
       })
     } else if (!bcrypt.compareSync(req.body.pswUsuario, monitor.pswUsuario)) {
-      log.error('Senha informada pelo usuário incorreta.');
+      errorLog.log('Senha informada pelo usuário é incorreta.');
       res.status(401).send({
         message: 'Senha incorreta!'
       })
@@ -103,14 +104,14 @@ exports.login = async (req, res) => {
     }, SECRET, {
       expiresIn: 86400
     });
-    log.info('Monitor ' + monitor.nomeUsuario + ' logado com sucesso!');
+    infoLog.log('Monitor ' + monitor.nomeUsuario + ' logado com sucesso!');
     res.status(200).send({
       nomeUsuario: monitor.nomeUsuario,
       cpfUsuario: monitor.cpfUsuario,
       token: token
     })
   } catch (error) {
-    log.error('Erro ao realizar login do monitor!', error);
+    errorLog.log('Erro ao realizar login do monitor!', error);
     res.status(500).send({
       message: error.message
     });

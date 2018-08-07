@@ -1,8 +1,12 @@
 const Pai = require("./../model/pai-schema");
-const Aluno = require("./../model/aluno-schema")
+const Aluno = require("./../model/aluno-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const log4j = require("../etc/log4j-init");
 const SECRET = 'cmcgmonitoria';
+
+infoLog = log4j.getLogger('info');
+errorLog = log4j.getLogger('errors');
 
 exports.create = async (req, res) => {
   let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -91,8 +95,10 @@ exports.delete = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  infoLog.log('Requisição recebida.');
   try {
     if (!req.body) {
+      errorLog.log('Requisição sem informação no corpo da mensagem.');
       res.status(500).send({
         message: 'Erro ao ler mensagem enviada!'
       });
@@ -101,10 +107,12 @@ exports.login = async (req, res) => {
       cpfUsuario: req.body.cpfUsuario
     });
     if (!pai) {
+      errorLog.log('Pai com CPF ' + req.body.cpfUsuario + ' não encontrado.');
       res.status(404).send({
         message: 'Usuario informado não cadastrado ou incorreto!'
       })
     } else if (!bcrypt.compareSync(req.body.pswUsuario, pai.pswUsuario)) {
+      errorLog.log('Senha informada pelo usuário é incorreta.');
       res.status(401).send({
         message: 'Senha incorreta!'
       })
@@ -116,14 +124,16 @@ exports.login = async (req, res) => {
     }, SECRET, {
       expiresIn: 86400
     });
+    infoLog.log('Pai ' + pai.nomeUsuario + ' logado com sucesso!');
     res.status(200).send({
       user: {
         nomeUsuario: pai.nomeUsuario,
         cpfUsuario: pai.cpfUsuario,
         token: token
       }
-    })
+    });
   } catch (error) {
+    errorLog.log('Erro ao realizar login do responsável!', error);
     res.status(500).send({
       message: error.message
     });

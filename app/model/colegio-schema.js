@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const colegioSchema = new mongoose.Schema({
   colegioUsuario: {type: String, required: true},

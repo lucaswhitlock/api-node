@@ -1,11 +1,12 @@
 module.exports = (api) => {
 
     const aluno = require('../controller/aluno-controller')
+    const seguranca = require('../etc/check-identity')
 
-    api.post('/alunos', aluno.create)
-    api.get('/alunos', aluno.findAll)
-    api.get('/alunos/:alunoId', aluno.findById)
-    api.put('/alunos/:alunoId', aluno.update)
-    api.delete('/alunos/:alunoId', aluno.delete)
+    api.post('/alunos', seguranca.verify, aluno.create)
+    api.get('/alunos', seguranca.verify, aluno.findAll)
+    api.get('/alunos/:alunoId', seguranca.verify, aluno.findById)
+    api.put('/alunos/:alunoId', seguranca.verify, aluno.update)
+    api.delete('/alunos/:alunoId', seguranca.verify, aluno.delete)
 
 }
