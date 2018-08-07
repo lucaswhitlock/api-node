@@ -1,0 +1,25 @@
+{
+  "name": "api-cmcg-monitoria",
+  "version": "1.0.0",
+  "description": "Simple API to manage access to cmcg mobile application",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "author": "lwhitlock",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "log4js": "^3.0.4",
+    "mongodb": "^3.0.7",
+    "mongoose": "^5.0.17",
+    "mongoose-extend-schema": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  }
+}
