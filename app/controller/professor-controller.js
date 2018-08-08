@@ -2,7 +2,6 @@ const Professor = require("./../model/professor-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const log4j = require('../etc/log4j-init');
-const SECRET_MONITORIA = 'cmcgmonitoria';
 
 log = log4j.getLogger();
 
@@ -100,7 +99,7 @@ exports.login = async (req, res) => {
       id: professor._id,
       nomeUsuario: professor.nomeUsuario,
       cpfUsuario: professor.cpfUsuario
-    }, SECRET_MONITORIA, {
+    }, process.env.SECRET, {
       expiresIn: 86400
     });
     log.info('Professor [' + professor.nomeUsuario + '] logado com sucesso!');

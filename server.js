@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const dbConfig = require('./database.config')
@@ -16,7 +17,7 @@ mongoose.connect(dbConfig.url_local).then(() => {
   process.exit()
 })
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
 
 const server = express();
 

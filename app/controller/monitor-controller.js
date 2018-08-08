@@ -2,7 +2,6 @@ const Monitor = require("./../model/monitor-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const log4j = require('../etc/log4j-init');
-const SECRET_MONITORIA = 'cmcgmonitoria';
 
 log = log4j.getLogger();
 
@@ -100,7 +99,7 @@ exports.login = async (req, res) => {
       id: monitor._id,
       nomeUsuario: monitor.nomeUsuario,
       cpfUsuario: monitor.cpfUsuario
-    }, SECRET_MONITORIA, {
+    }, process.env.SECRET, {
       expiresIn: 86400
     });
     log.info('Monitor [' + monitor.nomeUsuario + '] logado com sucesso!');

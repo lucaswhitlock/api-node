@@ -5,7 +5,6 @@ const Monitor = require("../model/monitor-schema");
 const Juiz = require("../model/juiz-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const SECRET = 'cmcgmonitoria';
 
 exports.create = async (req, res) => {
   let hashedPassword = bcrypt.hashSync(colegioPassword);
@@ -100,7 +99,7 @@ exports.login = async (req, res) => {
       id: colegio._id,
       colegioUsuario: colegio.colegioUsuario,
       colegioPassword: colegio.colegioPassword
-    }, SECRET, {
+    }, process.env.SECRET, {
       expiresIn: 86400
     });
     res.status(200).send({

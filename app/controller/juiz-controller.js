@@ -1,7 +1,6 @@
 const Juiz = require("./../model/juiz-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const SECRET_MONITORIA = 'cmcgmonitoria';
 
 exports.create = async (req, res) => {
     let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -93,7 +92,7 @@ exports.login = async (req, res) => {
             id: juiz._id,
             nomeUsuario: juiz.nomeUsuario,
             cpfUsuario: juiz.cpfUsuario
-        }, SECRET_MONITORIA, {
+        }, process.env.SECRET, {
             expiresIn: 86400
         });
         res.status(200).send({

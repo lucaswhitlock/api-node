@@ -20,6 +20,7 @@
     "mongoose-extend-schema": "^1.0.0"
   },
   "devDependencies": {
+    "dotenv": "^6.0.0",
     "nodemon": "^1.17.3"
   }
 }
