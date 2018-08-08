@@ -3,7 +3,7 @@ const Aluno = require("./../model/aluno-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const log4j = require("../etc/log4j-init");
-const SECRET = 'cmcgmonitoria';
+const SECRET_RESP = 'cmcgresponsaveis';
 
 log = log4j.getLogger();
 
@@ -120,7 +120,7 @@ exports.login = async (req, res) => {
       id: pai._id,
       nomeUsuario: pai.nomeUsuario,
       cpfUsuario: pai.cpfUsuario
-    }, SECRET, {
+    }, SECRET_RESP, {
       expiresIn: 86400
     });
     log.info('Pai [' + pai.nomeUsuario + '] logado com sucesso!');

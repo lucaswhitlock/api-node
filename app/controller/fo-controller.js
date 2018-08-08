@@ -4,22 +4,27 @@ const Pai = require("./../model/pai-schema");
 
 exports.create = async (req, res) => {
 
-  let pai = await Pai.findOne({ filhoPai: req.body.aluno });
-  let monitor = await Monitor.findById(req.body.monitor);
+  let paiFO = await Pai.findOne({ filhoPai: req.body.aluno });
+  let monitorFO = await Monitor.findById(req.body.monitor);
+
+  let foAgravantes = req.body.foAgravantes != null ? req.body.foAgravantes : null;
+  let foAtenuantes = req.body.foAtenuantes != null ? req.body.foAtenuantes : null;
 
   var fo = new FO({
-    aluno: req.body.aluno,
-    monitor: req.body.monitor,
-    descricao: req.body.descricao,
-    responsavel: pai
+    foAluno: req.body.aluno,
+    foMonitor: req.body.monitor,
+    foResponsavel: paiFO,
+    foDescricao: req.body.descricao,
+    foAgravantes: foAgravantes,
+    foAtenuantes: foAtenuantes
   });
 
   try {
     let result = await fo.save( () => {
-      monitor.fosUsuarios.push(fo);
-      monitor.save();
-      pai.fosUsuarios.push(fo);
-      pai.save();
+      monitorFO.fosUsuario.push(fo);
+      monitorFO.save();
+      paiFO.fosUsuario.push(fo);
+      paiFO.save();
     });
     res.status(200).send(result)
   } catch (err) {

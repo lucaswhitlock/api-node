@@ -1,7 +1,7 @@
 const Juiz = require("./../model/juiz-schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const SECRET = 'cmcgmonitoria';
+const SECRET_MONITORIA = 'cmcgmonitoria';
 
 exports.create = async (req, res) => {
     let hashdPwsd = bcrypt.hashSync(req.body.pswUsuario);
@@ -24,7 +24,7 @@ exports.findAll = async (req, res) => {
     try {
         res.send(
             await Juiz.find().populate({
-                path: "fosUsuarios"
+                path: "fosUsuario"
             })
         );
     } catch (err) {
@@ -93,7 +93,7 @@ exports.login = async (req, res) => {
             id: juiz._id,
             nomeUsuario: juiz.nomeUsuario,
             cpfUsuario: juiz.cpfUsuario
-        }, SECRET, {
+        }, SECRET_MONITORIA, {
             expiresIn: 86400
         });
         res.status(200).send({
