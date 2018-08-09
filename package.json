@@ -15,7 +15,7 @@
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
     "log4js": "^3.0.4",
-    "mongodb": "^3.0.7",
+    "mongodb": "^3.1.1",
     "mongoose": "^5.0.17",
     "mongoose-extend-schema": "^1.0.0"
   },
