@@ -77,13 +77,13 @@ exports.login = async (req, res) => {
             });
         }
         let juiz = await Juiz.findOne({
-            cpfUsuario: req.body.email
+            cpfUsuario: req.body.cpfUsuario
         });
         if (!juiz) {
             res.status(404).send({
                 message: 'Usuario informado nao cadastrado ou incorreto!'
             })
-        } else if (!bcrypt.compareSync(req.body.password, juiz.pswUsuario)) {
+        } else if (!bcrypt.compareSync(req.body.pswUsuario, juiz.pswUsuario)) {
             res.status(401).send({
                 message: 'Senha incorreta!'
             })

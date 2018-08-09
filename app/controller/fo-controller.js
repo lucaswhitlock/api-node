@@ -36,9 +36,15 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    res.json(await FO.find().populate('aluno').populate({
-      path: 'monitor',
-      select: 'nomeMonitor nrMonitor'
+    res.json(await FO.find().populate({
+      path: 'foAluno',
+      select: 'nomeUsuario nrAluno salaAluno'
+    }).populate({
+      path: 'foMonitor',
+      select: 'nomeUsuario cpfUsuario'
+    }).populate({
+      path: 'foResponsavel',
+      select: 'nomeUsuario cpfUsuario'
     }));
   } catch (err) {
     res
@@ -51,7 +57,16 @@ exports.findAll = async (req, res) => {
 
 exports.findById = async (req, res) => {
   try {
-    const result = await FO.findById(req.params.foId);
+    const result = await FO.findById(req.params.foId).populate({
+      path: 'foAluno',
+      select: 'nomeUsuario nrAluno salaAluno'
+    }).populate({
+      path: 'foMonitor',
+      select: 'nomeUsuario cpfUsuario'
+    }).populate({
+      path: 'foResponsavel',
+      select: 'nomeUsuario cpfUsuario'
+    });
     if (result.isNull) {
       res.status(404).send({
         message: "Couldn't find any fo with the id:" + req.params.foId

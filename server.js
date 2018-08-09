@@ -10,7 +10,7 @@ const Pai = require('./app/controller/pai-controller')
 mongoose.Promise = global.Promise
 
 console.log("Connecting to database...")
-mongoose.connect(dbConfig.url_local).then(() => {
+mongoose.connect(dbConfig.url_local, { useNewUrlParser: true }).then(() => {
   console.log("Connected to database")
 }).catch(err => {
   console.log("Could not connect to the database.")
